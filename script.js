@@ -94,8 +94,6 @@ function createCard(imageName) {
   cardInner.append(back, front);
   card.append(cardInner);
 
-  card.classList.add('is-flipped');
-
   return card;
 }
 
@@ -115,6 +113,11 @@ function createBoard() {
     board.append(createCard(imageName));
   }
 
+  board.addEventListener('click', (event)=>{
+    const card = event.target.closest('.card');
+    card.classList.toggle('is-flipped');
+  })
+
   return board;
 }
 
@@ -133,3 +136,4 @@ function createGame() {
 }
 
 createGame();
+
