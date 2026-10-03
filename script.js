@@ -3,6 +3,12 @@
 const PAIRS_TOTAL = 8;
 
 let firstCard = null;
+let isLocked = false;
+
+let movesValueEl = null;
+let pairsValueEl = null;
+let moves = 0;
+let pairs = 0;
 
 const CARD_IMAGES = [
   'creeper',
@@ -53,23 +59,28 @@ function createStats() {
 
   const moves = createElement('div', 'stat');
   const movesLabel = createElement('span', 'stat-label', 'Moves');
-  const movesValue = createElement('span', 'stat-value', '0');
+  movesValueEl = createElement('span', 'stat-value', '0');
 
-  moves.append(movesLabel, movesValue);
+  moves.append(movesLabel, movesValueEl);
 
   const pairs = createElement('div', 'stat');
   const pairsLabel = createElement('span', 'stat-label', 'Pairs');
-  const pairsValue = createElement(
+  pairsValueEl = createElement(
     'span',
     'stat-value',
     `0 / ${PAIRS_TOTAL}`
   );
 
-  pairs.append(pairsLabel, pairsValue);
+  pairs.append(pairsLabel, pairsValueEl);
 
   stats.append(moves, pairs);
 
   return stats;
+}
+
+function updateCounters(){
+    movesValueEl.textContent = String(moves);
+    pairsValueEl.textContent = pairs + ' / ' + PAIRS_TOTAL;
 }
 
 function createCard(imageName) {
@@ -118,7 +129,9 @@ function createBoard() {
 
   board.addEventListener('click', (event)=>{
     const card = event.target.closest('.card');
-    if (!card) return; 
+    if (!card) return;
+    if (isLocked) return;
+
     if (card.classList.contains('is-flipped')) return;
     if (card.classList.contains('is-matched')) return;
     card.classList.add('is-flipped');
@@ -126,6 +139,8 @@ function createBoard() {
         firstCard = card;
         return;
     }
+    moves++;
+    updateCounters();
 
     const first = firstCard;
     const second = card;
@@ -133,11 +148,15 @@ function createBoard() {
         first.classList.add('is-matched');
         second.classList.add('is-matched');
         firstCard = null;
+        pairs++;
+        updateCounters();
     } else {
+        isLocked = true;
         setTimeout(() =>{
             first.classList.remove('is-flipped');
             second.classList.remove('is-flipped');
             firstCard = null;
+            isLocked = false;
         }, 1000);    
     }
   })
@@ -157,6 +176,7 @@ function createGame() {
   );
 
   document.body.append(app);
+  updateCounters();
 }
 
 createGame();
