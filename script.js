@@ -2,6 +2,8 @@
 
 const PAIRS_TOTAL = 8;
 
+let firstCard = null;
+
 const CARD_IMAGES = [
   'creeper',
   'enderman',
@@ -72,6 +74,7 @@ function createStats() {
 
 function createCard(imageName) {
   const card = createElement('div', 'card');
+  card.dataset.image = imageName;
 
   const cardInner = createElement('div', 'card-inner');
 
@@ -115,7 +118,28 @@ function createBoard() {
 
   board.addEventListener('click', (event)=>{
     const card = event.target.closest('.card');
-    card.classList.toggle('is-flipped');
+    if (!card) return; 
+    if (card.classList.contains('is-flipped')) return;
+    if (card.classList.contains('is-matched')) return;
+    card.classList.add('is-flipped');
+    if (firstCard === null) {
+        firstCard = card;
+        return;
+    }
+
+    const first = firstCard;
+    const second = card;
+    if (first.dataset.image === second.dataset.image){
+        first.classList.add('is-matched');
+        second.classList.add('is-matched');
+        firstCard = null;
+    } else {
+        setTimeout(() =>{
+            first.classList.remove('is-flipped');
+            second.classList.remove('is-flipped');
+            firstCard = null;
+        }, 1000);    
+    }
   })
 
   return board;
