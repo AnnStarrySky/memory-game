@@ -1,6 +1,6 @@
 'use strict'
 
-const PAIRS_TOTAL = 8;
+const PAIRS_TOTAL = 1;
 
 let firstCard = null;
 let isLocked = false;
@@ -78,6 +78,41 @@ function createStats() {
   return stats;
 }
 
+function createModal({ title, body, actions }) {
+  const dialog = createElement('dialog', 'modal');
+  const content = createElement('div', 'modal-content');
+  const titleEl = createElement('h2', 'modal-title', title);
+  const bodyEl = createElement('div', 'modal-body', body);
+  const actionsEl = createElement('div', 'modal-actions');
+  for (const action of actions) {
+    const btn = createElement('button', 'btn', action.label);
+    btn.addEventListener('click', action.onClick);
+    actionsEl.append(btn);
+  }
+
+  content.append(titleEl, bodyEl, actionsEl);
+  dialog.append(content);
+
+  dialog.addEventListener('click', (event) => {
+    if (event.target === dialog) dialog.close();
+  });
+
+  dialog.addEventListener('close', () => {
+    document.body.classList.remove('no-scroll');
+  });
+
+  function open() {
+    document.body.classList.add('no-scroll');
+    dialog.showModal();
+  }
+
+  function close() {
+    dialog.close();
+  }
+
+  return { dialog, open, close };
+}
+
 function updateCounters(){
     movesValueEl.textContent = String(moves);
     pairsValueEl.textContent = pairs + ' / ' + PAIRS_TOTAL;
@@ -150,6 +185,8 @@ function createBoard() {
         firstCard = null;
         pairs++;
         updateCounters();
+        console.log('checkWin:', pairs);
+        checkWin();
     } else {
         isLocked = true;
         setTimeout(() =>{
@@ -164,9 +201,22 @@ function createBoard() {
   return board;
 }
 
+function checkWin(){
+    if (pairs < PAIRS_TOTAL) return;
+    const winModal = createModal({
+        title: 'You win!',
+        body: `Moves: ${moves}`,
+        actions: [
+            { label: 'New Game', onClick: () => {} },
+            { label: 'Close', onClick: () => winModal.close() },
+        ],  
+    })
+    document.body.append(winModal.dialog);
+    winModal.open();
+}
+
 function createGame() {
   const app = createElement('div', '');
-
   app.id = 'app';
 
   app.append(
