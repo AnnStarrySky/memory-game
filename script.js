@@ -71,7 +71,7 @@ function createLeaderboardContent() {
   const thead = createElement('thead');
   const headRow = createElement('tr');
   headRow.append(
-    createElement('th', '', 'Rank'),
+    createElement('th', '', 'Place'),
     createElement('th', '', 'Moves'),
     createElement('th', '', 'Date')
   );
