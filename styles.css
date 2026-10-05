@@ -259,3 +259,45 @@ body::before {
 body.no-scroll {
   overflow: hidden;
 }
+
+.leaderboard-empty {
+  margin: 0;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.leaderboard-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.leaderboard-table th,
+.leaderboard-table td {
+  padding: 8px 6px;
+  text-align: center;
+}
+
+.leaderboard-table th {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  border-bottom: 1px solid rgba(34, 230, 255, .3);
+}
+
+.leaderboard-table td {
+  color: var(--text-main);
+  border-bottom: 1px solid rgba(255, 255, 255, .06);
+}
+
+.leaderboard-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.leaderboard-table td:nth-child(2) {
+  font-family: "Press Start 2P", "Courier New", monospace;
+  color: var(--neon-cyan);
+  font-size: 12px;
+}

@@ -1,5 +1,6 @@
 'use strict'
 
+const RESULTS_KEY = 'memory-game-results';
 const PAIRS_TOTAL = 8;
 
 let firstCard = null;
@@ -26,6 +27,79 @@ const CARD_IMAGES = [
   'wolf',
   'spider'
 ];
+
+function loadResults(){
+    const results = localStorage.getItem(RESULTS_KEY);
+    if (results === null) return [];
+    return JSON.parse(results);
+}
+
+function saveResult(moves){
+    const results = loadResults();
+    const resultsObj = {
+        moves: moves,
+        date: Date.now()
+    }
+    results.push(resultsObj);
+    results.sort((a, b) => a.moves - b.moves || a.date - b.date);
+    localStorage.setItem(RESULTS_KEY, JSON.stringify(results.slice(0, 10)));
+}
+
+function getTopResults(){
+    const results = loadResults();
+    return results.slice(0, 10);
+}
+
+function formatDate(dateValue){
+    const date = new Date(dateValue);
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+    return `${String(day).padStart(2, '0')}.${String(month).padStart(2, '0')}.${year}`;
+}
+
+function createLeaderboardContent() {
+  const results = getTopResults();
+
+  if (results.length === 0) {
+    const empty = createElement('p', 'leaderboard-empty', 'No results yet');
+    return empty;
+  }
+
+  const table = createElement('table', 'leaderboard-table');
+
+  const thead = createElement('thead');
+  const headRow = createElement('tr');
+  headRow.append(
+    createElement('th', '', 'Rank'),
+    createElement('th', '', 'Moves'),
+    createElement('th', '', 'Date')
+  );
+  thead.append(headRow);
+
+  const tbody = createElement('tbody');
+  results.forEach((entry, index) => {
+    const row = createElement('tr');
+    row.append(
+      createElement('td', '', String(index + 1)),
+      createElement('td', '', String(entry.moves)),
+      createElement('td', '', formatDate(entry.date))
+    );
+    tbody.append(row);
+  });
+
+  table.append(thead, tbody);
+  return table;
+}
+
+function openLeaderboard(){
+    const content = createLeaderboardContent();
+    const modal = createModal({ title: 'Leaderboard', body: content, actions: [
+        { label: 'Close', onClick: () => modal.close() },
+    ] });
+    document.body.append(modal.dialog);
+    modal.open();
+}
 
 function createElement(tag, className = '', text = '') {
   const node = document.createElement(tag);
@@ -54,6 +128,7 @@ function createHeader() {
   const newGameButton = createElement('button', 'btn', 'New Game');
   newGameButton.addEventListener('click', startNewGame);
   const leaderboardButton = createElement('button', 'btn', 'Leaderboard');
+  leaderboardButton.addEventListener('click', openLeaderboard);
 
   buttons.append(newGameButton, leaderboardButton);
   header.append(title, buttons);
@@ -89,7 +164,12 @@ function createModal({ title, body, actions }) {
   const dialog = createElement('dialog', 'modal');
   const content = createElement('div', 'modal-content');
   const titleEl = createElement('h2', 'modal-title', title);
-  const bodyEl = createElement('div', 'modal-body', body);
+  const bodyEl = createElement('div', 'modal-body');
+  if (typeof body === 'string') {
+    bodyEl.textContent = body;
+  } else {
+    bodyEl.append(body);
+  }
   const actionsEl = createElement('div', 'modal-actions');
   for (const action of actions) {
     const btn = createElement('button', 'btn', action.label);
@@ -231,6 +311,7 @@ function createBoard() {
 
 function checkWin(){
     if (pairs < PAIRS_TOTAL) return;
+    saveResult(moves);
     isGameOver = true;
     winModal = createModal({
         title: 'You win!',
