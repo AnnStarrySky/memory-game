@@ -292,7 +292,6 @@ function createBoard() {
         firstCard = null;
         pairs++;
         updateCounters();
-        console.log('checkWin:', pairs);
         checkWin();
     } else {
         isLocked = true;
