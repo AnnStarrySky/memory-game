@@ -10,6 +10,8 @@ let pairsValueEl = null;
 let moves = 0;
 let pairs = 0;
 
+let isGameOver = false;
+
 const CARD_IMAGES = [
   'creeper',
   'enderman',
@@ -129,6 +131,7 @@ function createCard(imageName) {
 
   backImage.src = 'assets/cards/card_back.png';
   backImage.alt = '';
+  backImage.draggable = false;
 
   back.append(backImage);
 
@@ -137,6 +140,7 @@ function createCard(imageName) {
 
   image.src = `assets/cards/${imageName}.png`;
   image.alt = '';
+  image.draggable = false;
 
   front.append(image);
 
@@ -165,6 +169,7 @@ function createBoard() {
   board.addEventListener('click', (event)=>{
     const card = event.target.closest('.card');
     if (!card) return;
+    if (isGameOver) return;
     if (isLocked) return;
 
     if (card.classList.contains('is-flipped')) return;
@@ -203,6 +208,7 @@ function createBoard() {
 
 function checkWin(){
     if (pairs < PAIRS_TOTAL) return;
+    isGameOver = true;
     const winModal = createModal({
         title: 'You win!',
         body: `Moves: ${moves}`,
