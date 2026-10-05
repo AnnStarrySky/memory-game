@@ -1,6 +1,6 @@
 'use strict'
 
-const PAIRS_TOTAL = 1;
+const PAIRS_TOTAL = 8;
 
 let firstCard = null;
 let isLocked = false;
@@ -11,6 +11,10 @@ let moves = 0;
 let pairs = 0;
 
 let isGameOver = false;
+
+let boardEl = null;
+let flipTimeoutId = null;
+let winModal = null;
 
 const CARD_IMAGES = [
   'creeper',
@@ -48,6 +52,7 @@ function createHeader() {
   const buttons = createElement('div', 'header-actions');
 
   const newGameButton = createElement('button', 'btn', 'New Game');
+  newGameButton.addEventListener('click', startNewGame);
   const leaderboardButton = createElement('button', 'btn', 'Leaderboard');
 
   buttons.append(newGameButton, leaderboardButton);
@@ -150,10 +155,22 @@ function createCard(imageName) {
   return card;
 }
 
-function createBoard() {
-  const board = createElement('div', 'board');
+function startNewGame(){
+    clearTimeout(flipTimeoutId);
+    flipTimeoutId = null;
+    if (winModal) winModal.close();
+    firstCard = null;
+    isLocked = false;
+    isGameOver = false;
+    moves = 0;
+    pairs = 0;
+    updateCounters();
+    renderBoard(boardEl);
+}
 
-  const cards = [];
+function renderBoard(board){
+    board.replaceChildren();
+    const cards = [];
 
   for (const imageName of CARD_IMAGES) {
     cards.push(imageName);
@@ -165,6 +182,11 @@ function createBoard() {
   for (const imageName of cards) {
     board.append(createCard(imageName));
   }
+}
+
+function createBoard() {
+  const board = createElement('div', 'board');
+  boardEl = board;
 
   board.addEventListener('click', (event)=>{
     const card = event.target.closest('.card');
@@ -194,26 +216,30 @@ function createBoard() {
         checkWin();
     } else {
         isLocked = true;
-        setTimeout(() =>{
+        flipTimeoutId = setTimeout(() =>{
             first.classList.remove('is-flipped');
             second.classList.remove('is-flipped');
             firstCard = null;
             isLocked = false;
+            flipTimeoutId = null;
         }, 1000);    
     }
   })
-
+  renderBoard(board);
   return board;
 }
 
 function checkWin(){
     if (pairs < PAIRS_TOTAL) return;
     isGameOver = true;
-    const winModal = createModal({
+    winModal = createModal({
         title: 'You win!',
         body: `Moves: ${moves}`,
         actions: [
-            { label: 'New Game', onClick: () => {} },
+            { label: 'New Game', onClick: () => {
+                winModal.close();
+                startNewGame();
+            } },
             { label: 'Close', onClick: () => winModal.close() },
         ],  
     })
@@ -236,4 +262,3 @@ function createGame() {
 }
 
 createGame();
-
