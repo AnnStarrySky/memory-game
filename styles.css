@@ -1,3 +1,7 @@
+html {
+  scrollbar-gutter: stable;
+}
+
 :root {
   --bg-deep:    #070a1a;
   --bg-mid:     #0d1230;
