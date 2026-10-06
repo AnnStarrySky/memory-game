@@ -25,3 +25,11 @@ in the fewest moves possible.
 2. Open the project folder in VS Code.
 3. Right-click on `index.html` → **Open with Live Server**.
 4. The app opens at `http://127.0.0.1:5500`.
+
+## Tech Stack
+
+- **HTML5** — markup
+- **CSS3** — styling, animations, responsiveness (Flexbox / Grid)
+- **JavaScript (ES6+)** — game logic, DOM manipulation and `localStorage`
+- **GitHub Pages** — demo hosting
+- **Live Server** — local development
