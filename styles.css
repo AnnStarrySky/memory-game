@@ -292,6 +292,9 @@ body.no-scroll {
 }
 
 @media (max-width: 520px) {
+  #app{
+    width: 400px;
+  }
   .header {
     justify-content: center;
     text-align: center;
