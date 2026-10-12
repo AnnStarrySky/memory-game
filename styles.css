@@ -293,7 +293,7 @@ body.no-scroll {
 
 @media (max-width: 520px) {
   #app{
-    width: 400px;
+    width: 300px;
   }
   .header {
     justify-content: center;
