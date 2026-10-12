@@ -57,14 +57,14 @@ body::before {
 
 #app {
   width: 100%;
-  max-width: 760px;
+  max-width: 450px;
   padding-top: 8px;
 }
 
 .header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   gap: 16px;
   flex-wrap: wrap;
 }
@@ -110,21 +110,6 @@ body::before {
 .btn:focus-visible {
   outline: 2px solid var(--neon-cyan);
   outline-offset: 2px;
-}
-
-@media (max-width: 560px) {
-  .header {
-    justify-content: center;
-    text-align: center;
-  }
-  .header-actions {
-    justify-content: center;
-    width: 100%;
-  }
-  .header-title { font-size: 16px; }
-  .btn { padding: 9px 12px; font-size: 13px; }
-  .stat-value { font-size: 14px; }
-  .board { gap: 8px; }
 }
 
 .card-face img {
@@ -304,4 +289,25 @@ body.no-scroll {
   font-family: "Press Start 2P", "Courier New", monospace;
   color: var(--neon-cyan);
   font-size: 12px;
+}
+
+@media (max-width: 520px) {
+  .header {
+    justify-content: center;
+    text-align: center;
+  }
+  .header-actions {
+    justify-content: center;
+    width: 100%;
+  }
+  .header-title { font-size: 16px; }
+  .btn { padding: 9px 12px; font-size: 13px; }
+  .stat-value { font-size: 14px; }
+  .board { gap: 8px; }
+}
+
+@media (max-width: 400px) {
+  .stats {
+    flex-direction: column;
+  }
 }
